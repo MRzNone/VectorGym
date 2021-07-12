@@ -1,5 +1,5 @@
 from functools import partial
-from typing import Any, List, Callable
+from typing import Any, List, Callable, Tuple
 
 from numpy import select
 
@@ -9,12 +9,33 @@ import gym
 
 
 class VectorGym:
+    """
+    Run multiple gym environments using multiprocessing.
+    """
     def __init__(self,
                  env_name,
                  num_envs=1,
                  block=True,
                  return_attr_on_call=True,
                  **kwargs) -> None:
+        """
+        Create Vecortized gym environments. All arguments excep num_envs, block,
+        and return_attr_on_call are passed to the gym environment. All calls will
+        be processed concurrently on all environments. Select which environments
+        to call with the select attribute. E.g. envs.step(action, select=[True, False])
+        will only step the first environment. Wait for result and before returning if
+        block is enabled. Block properties (e.g. env.action_space) if
+        return_attr_on_call is enabled. If not blocked, concurrent.futures.Future
+        is returned.
+
+        Args:
+            env_name (str): gym environment id
+            num_envs (int, optional): Number of concurrent environment to create. Defaults to 1.
+            block (bool, optional): If block before returning. Defaults to True.
+            return_attr_on_call (bool, optional): If block calls to attributes
+                Behaved weidly if disabled,
+                e.g. envs.action_space() instead of envs.action_space. Defaults to True.
+        """
         self.envs = [ProcessGym(env_name, **kwargs) for _ in range(num_envs)]
         self.num_envs = num_envs
         self.block = block
@@ -75,10 +96,15 @@ class VectorGym:
 
         return partial(method, self, name=name)
 
-    def close(self):
+    def close(self) -> None:
         [env.close() for env in self.envs]
 
-    def __getattr__(self, name: str) -> Any:
+    def __getattr__(
+            self, name: str
+    ) -> Tuple[Callable[[List[Any]], List[Future]], Any, Future]:
+        """
+        Forward calls to the environments. Deal with block and return_attr_on_call.
+        """
         if name not in self._env_attr_callable:
             raise AttributeError
 
