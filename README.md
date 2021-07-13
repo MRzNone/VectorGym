@@ -3,6 +3,8 @@ Multi-process any(most) gym environment. Automatically parallel the given gym en
 
 # Quick Start
 
+Check [this demo](https://github.com/MRzNone/VectorGym/blob/main/demo/train_simple.py) for a skeleton for training using VectorSim. It deals with only running unfinished environments during trajectory collection.
+
 Run gym environment in parallel.
 ```
 from VectorGym import VectorGym
