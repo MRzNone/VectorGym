@@ -10,6 +10,8 @@ setup(
     author='Weihao Zeng',
     author_email="whzeng98@gmail.com",
     keywords=['gym', 'multiprocess', 'parallel', 'simple'],
+    download_url=
+    'https://github.com/MRzNone/VectorGym/archive/refs/tags/v0.1.0.tar.gz',
     install_requires=[
         'numpy',
         'gym',
