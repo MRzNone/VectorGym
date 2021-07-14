@@ -16,6 +16,7 @@ setup(
     description='Simple multiprocess tool for gym environments',
     author='Weihao Zeng',
     author_email="whzeng98@gmail.com",
+    url='https://github.com/MRzNone/VectorGym',
     keywords=['gym', 'multiprocess', 'parallel', 'simple'],
     download_url=
     F'https://github.com/MRzNone/VectorGym/archive/refs/tags/v{VERSION}.tar.gz',
