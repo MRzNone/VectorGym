@@ -81,6 +81,8 @@ if __name__ == '__main__':
             #[(observation, reward, done, info), (observation, reward, done, info)]
             ret = envs.step(actions, select=~done)
 
+            _safe_append(obs, ob, ~done)
+
             # process the transition (return from step) to avoid the None(s)
             ob = []
             for i, ret in enumerate(envs.step(actions, select=~done)):
@@ -94,7 +96,6 @@ if __name__ == '__main__':
                 ob.append(t_ob)
                 next_obs[i].append(t_ob)
                 rewards[i].append(t_rew)
-            _safe_append(obs, ob, ~done)
 
             step += 1
             # end the rollout if the rollout ended
