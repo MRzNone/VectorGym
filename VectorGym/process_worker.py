@@ -138,10 +138,17 @@ class ProcessGym:
         # make getting result async
         self.future_executor = ThreadPoolExecutor(max_workers=1)
         self.gym_worker.start()
+        self.closed = False
 
         self.gym_callable = self.get_attr_callable_dict().result()
 
+    def __del__(self):
+        self.close()
+
     def close(self):
+        if self.closed:
+            return
+
         self.request_queue.put(QueueExit())
         self.request_queue.close()
         self.con.close()
@@ -149,6 +156,7 @@ class ProcessGym:
         self.gym_worker.join()
         self.gym_worker.close()
         self.future_executor.shutdown()
+        self.closed = True
 
     def __getattr__(self, name):
         # forward to gym worker and

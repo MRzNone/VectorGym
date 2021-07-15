@@ -1,8 +1,6 @@
 from functools import partial
 from typing import Any, List, Callable, Tuple
 
-from numpy import select
-
 from VectorGym.process_worker import ProcessGym
 from concurrent.futures import Future
 import gym
@@ -95,6 +93,9 @@ class VectorGym:
             return res_futures
 
         return partial(method, self, name=name)
+
+    def __del__(self):
+        self.close()
 
     def close(self) -> None:
         [env.close() for env in self.envs]
